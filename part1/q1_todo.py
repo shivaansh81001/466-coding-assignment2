@@ -19,9 +19,20 @@ def train_logistic_regression(X, t):
     """
     Given data, train your logistic classifier.
     Return weight and bias
+    
     """
     
+    m,n=X.shape
+    w=np.zeros(n)
+    b=0
     
+    for i in range(1000):
+        t_hat=1/(1+np.exp(-(np.dot(X,w)+b)))
+        dw=(1/m)*np.dot(X.T,(t_hat-t))
+        db=(1/m)*np.sum(t_hat-t)
+        w-=0.1*dw
+        b-=0.1*db
+    #print(w,b)
     return w, b
 
 
@@ -29,7 +40,8 @@ def predict_logistic_regression(X, w, b):
     """
     Generate predictions by your logistic classifier.
     """
-
+    temp=1/(1+np.exp(-(X@w+b)))
+    t=(temp>=0.5).astype(int)
     return t
 
 
@@ -38,11 +50,12 @@ def train_linear_regression(X, t):
     Given data, train your linear regression classifier.
     Return weight and bias
     """
-    #print(t)
+    #print(X,t)
     temp=np.linalg.inv(X.T@X)@X.T@t
     #print(temp)
-    w=temp[:-1]
+    w=temp
     b=temp[-1]
+    #print(w)
     return w, b
 
 
@@ -52,8 +65,8 @@ def predict_linear_regression(X, w, b):
     """
     #print(X,w)
     temp=np.sum(X*w,axis=1)+b
-    t=[int(x) for x in temp]
-    print(t)
+    t=[1 if x>=0.5 else 0 for x in temp]
+    #print(t)
     return t
 
 
@@ -61,8 +74,9 @@ def get_accuracy(t, t_hat):
     """
     Calculate accuracy,
     """
+    #print(t,t_hat)
     acc=np.mean(t==t_hat)*100
-    print(acc)
+    #print("accuracy",acc)
     return acc
 
 
@@ -73,6 +87,7 @@ def main():
     w, b = train_linear_regression(X, t)
     t_hat = predict_linear_regression(X, w, b)
     print("Accuracy of linear regression on dataset A:", get_accuracy(t_hat, t))
+    
     plot_data(X, t, w, b, is_logistic=False,
               figure_name='dataset_A_linear.png')
 
@@ -80,7 +95,7 @@ def main():
     X, t = generate_data("A")
     w, b = train_logistic_regression(X, t)
     t_hat = predict_logistic_regression(X, w, b)
-    print("Accuracy of linear regression on dataset A:", get_accuracy(t_hat, t))
+    print("Accuracy of logistic regression on dataset A:", get_accuracy(t_hat, t))
     plot_data(X, t, w, b, is_logistic=True,
               figure_name='dataset_A_logistic.png')
 
@@ -97,7 +112,7 @@ def main():
     X, t = generate_data("B")
     w, b = train_logistic_regression(X, t)
     t_hat = predict_logistic_regression(X, w, b)
-    print("Accuracy of linear regression on dataset B:", get_accuracy(t_hat, t))
+    print("Accuracy of logistic regression on dataset B:", get_accuracy(t_hat, t))
     plot_data(X, t, w, b, is_logistic=True,
               figure_name='dataset_B_logistic.png')
 
