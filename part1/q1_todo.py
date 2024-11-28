@@ -20,7 +20,8 @@ def train_logistic_regression(X, t):
     Given data, train your logistic classifier.
     Return weight and bias
     """
-
+    
+    
     return w, b
 
 
@@ -37,7 +38,11 @@ def train_linear_regression(X, t):
     Given data, train your linear regression classifier.
     Return weight and bias
     """
-
+    #print(X,t)
+    temp=np.linalg.inv(X.T@X)@X.T@t
+    #print(temp)
+    w=temp[:-1]
+    b=temp[-1]
     return w, b
 
 
