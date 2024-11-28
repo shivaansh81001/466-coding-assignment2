@@ -38,7 +38,7 @@ def train_linear_regression(X, t):
     Given data, train your linear regression classifier.
     Return weight and bias
     """
-    #print(X,t)
+    #print(t)
     temp=np.linalg.inv(X.T@X)@X.T@t
     #print(temp)
     w=temp[:-1]
@@ -50,7 +50,10 @@ def predict_linear_regression(X, w, b):
     """
     Generate predictions by your logistic classifier.
     """
-
+    #print(X,w)
+    temp=np.sum(X*w,axis=1)+b
+    t=[int(x) for x in temp]
+    print(t)
     return t
 
 
@@ -58,6 +61,8 @@ def get_accuracy(t, t_hat):
     """
     Calculate accuracy,
     """
+    acc=np.mean(t==t_hat)*100
+    print(acc)
     return acc
 
 
