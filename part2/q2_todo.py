@@ -112,15 +112,16 @@ def train(X_train, y_train, X_val, t_val):
             gradient=(X_batch.T@(y-t_one_hot))/batch_size
             W-=alpha*gradient
             
-        _, _, _, val_acc = predict(X_val, W, t_val)
-        if val_acc > acc_best:
-            acc_best = val_acc
-            epoch_best = epoch
-            W_best = W.copy()
+        _, _, _,val_acc=predict(X_val, W, t_val)
+        if val_acc>acc_best:
+            acc_best=val_acc
+            epoch_best=epoch
+            W_best=W.copy()
         
             
         valid_accs.append(val_acc)
-        print(f"Epoch {epoch+1}/{MaxEpoch}: Validation Accuracy = {val_acc:.4f}")
+        
+        #print(f"Epoch {epoch+1} Accuracy = {val_acc*100:.2f} %")
         
     return epoch_best, acc_best,  W_best, train_losses, valid_accs
 
@@ -130,12 +131,9 @@ def train(X_train, y_train, X_val, t_val):
 X_train, t_train, X_val, t_val, X_test, t_test = readMNISTdata()
 
 
-print(X_train.shape, t_train.shape, X_val.shape,
-      t_val.shape, X_test.shape, t_test.shape)
-
-
+#print(X_train.shape, t_train.shape, X_val.shape,t_val.shape, X_test.shape, t_test.shape)
+      
 N_class = 10
-
 alpha = 0.1      # learning rate
 batch_size = 100    # batch size
 MaxEpoch = 50        # Maximum epoch
@@ -145,7 +143,8 @@ decay = 0.          # weight decay
 # TODO: report 3 number, plot 2 curves
 epoch_best, acc_best,  W_best, train_losses, valid_accs = train(X_train, t_train, X_val, t_val)
 
-print(epoch_best ,acc_best, W_best, train_losses, valid_accs)
+print("Best Epoch: ",epoch_best)
+print("Best Training Accuracy: ",round(acc_best*100,2)," %")
 
 _, _, _, acc_test = predict(X_test, W_best, t_test)
-print(acc_test)
+print("Test Accuracy: ",round(acc_test*100,2)," %")
