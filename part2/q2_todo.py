@@ -47,6 +47,24 @@ def readMNISTdata():
 
     return X_train, t_train, X_val, t_val, test_data / 256, test_labels
 
+def plot_graphs(train_losses,valid_accs):
+    plt.figure(figsize=(10, 5))
+    plt.subplot(1, 2, 1)
+    plt.plot(range(1, MaxEpoch + 1), train_losses, label='Training Loss')
+    plt.xlabel('Epochs')
+    plt.ylabel('Cross-Entropy Loss')
+    plt.title('Training Loss Curve')
+    plt.legend()
+    
+    plt.subplot(1, 2, 2)
+    plt.plot(range(1, MaxEpoch + 1), valid_accs, label='Validation Accuracy', color='orange')
+    plt.xlabel('Epochs')
+    plt.ylabel('Accuracy')
+    plt.title('Validation Accuracy Curve')
+    plt.legend()
+    
+    plt.tight_layout()
+    plt.show()
 
 def predict(X, W, t=None):
     # X_new: Nsample x (d+1)
@@ -112,6 +130,10 @@ def train(X_train, y_train, X_val, t_val):
             gradient=(X_batch.T@(y-t_one_hot))/batch_size
             W-=alpha*gradient
             
+            
+        _,_,train_loss,_=predict(X_train,W,t_train)
+        train_losses.append(train_loss)    
+        
         _, _, _,val_acc=predict(X_val, W, t_val)
         if val_acc>acc_best:
             acc_best=val_acc
@@ -143,8 +165,10 @@ decay = 0.          # weight decay
 # TODO: report 3 number, plot 2 curves
 epoch_best, acc_best,  W_best, train_losses, valid_accs = train(X_train, t_train, X_val, t_val)
 
+plot_graphs(train_losses, valid_accs)
+
 print("Best Epoch: ",epoch_best)
-print("Best Training Accuracy: ",round(acc_best*100,2)," %")
+print("Best validation Accuracy: ",round(acc_best*100,2)," %")
 
 _, _, _, acc_test = predict(X_test, W_best, t_test)
 print("Test Accuracy: ",round(acc_test*100,2)," %")
